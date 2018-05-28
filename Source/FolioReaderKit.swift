@@ -121,7 +121,10 @@ open class FolioReader: NSObject {
 
     /// Check if layout needs to change to fit Right To Left
     var needsRTLChange: Bool {
-        return (self.readerContainer?.book.spine.isRtl == true && self.readerContainer?.readerConfig.scrollDirection == .horizontal)
+        
+        let scrollDirection = self.readerContainer?.readerConfig.scrollDirection
+        
+        return (self.readerContainer?.book.spine.isRtl ?? false && scrollDirection == .horizontal)
     }
 
     func isNight<T>(_ f: T, _ l: T) -> T {
@@ -160,12 +163,24 @@ extension FolioReader {
     ///   - config: FolioReader configuration.
     ///   - shouldRemoveEpub: Boolean to remove the epub or not. Default true.
     ///   - animated: Pass true to animate the presentation; otherwise, pass false.
-    open func presentReader(parentViewController: UIViewController, withEpubPath epubPath: String, unzipPath: String? = nil, andConfig config: FolioReaderConfig, shouldRemoveEpub: Bool = true, animated:
-        Bool = true) {
-        let readerContainer = FolioReaderContainer(withConfig: config, folioReader: self, epubPath: epubPath, unzipPath: unzipPath, removeEpub: shouldRemoveEpub)
+    open func presentReader(parentViewController: UIViewController,
+                            withEpubPath epubPath: String,
+                            unzipPath: String? = nil,
+                            andConfig config: FolioReaderConfig,
+                            shouldRemoveEpub: Bool = true,
+                            animated: Bool = true) {
+        
+        let readerContainer = FolioReaderContainer(withConfig: config,
+                                                   folioReader: self,
+                                                   epubPath: epubPath,
+                                                   unzipPath: unzipPath,
+                                                   removeEpub: shouldRemoveEpub)
+        
         self.readerContainer = readerContainer
+        
         parentViewController.present(readerContainer, animated: animated, completion: nil)
-        addObservers()
+        
+        self.addObservers()
     }
 }
 
@@ -180,6 +195,7 @@ extension FolioReader {
     /// Check if current theme is Night mode
     open var nightMode: Bool {
         get { return self.defaults.bool(forKey: kNightMode) }
+        
         set (value) {
             self.defaults.set(value, forKey: kNightMode)
 

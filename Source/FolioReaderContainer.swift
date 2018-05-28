@@ -11,6 +11,7 @@ import FontBlaster
 
 /// Reader container
 open class FolioReaderContainer: UIViewController {
+    
     var shouldHideStatusBar = true
     var shouldRemoveEpub = true
     
@@ -38,7 +39,12 @@ open class FolioReaderContainer: UIViewController {
     ///   - path: The ePub path on system. Must not be nil nor empty string.
 	///   - unzipPath: Path to unzip the compressed epub.
     ///   - removeEpub: Should delete the original file after unzip? Default to `true` so the ePub will be unziped only once.
-    public init(withConfig config: FolioReaderConfig, folioReader: FolioReader, epubPath path: String, unzipPath: String? = nil, removeEpub: Bool = true) {
+    public init(withConfig config: FolioReaderConfig,
+                folioReader: FolioReader,
+                epubPath path: String,
+                unzipPath: String? = nil,
+                removeEpub: Bool = true) {
+        
         self.readerConfig = config
         self.folioReader = folioReader
         self.epubPath = path
@@ -89,7 +95,7 @@ open class FolioReaderContainer: UIViewController {
             kCurrentTOCMenu: 0,
             kCurrentMediaOverlayStyle: MediaOverlayStyle.default.rawValue,
             kCurrentScrollDirection: FolioReaderScrollDirection.defaultVertical.rawValue
-            ])
+        ])
     }
 
     /// Set the `FolioReaderConfig` and epubPath.
@@ -113,41 +119,55 @@ open class FolioReaderContainer: UIViewController {
     override open func viewDidLoad() {
         super.viewDidLoad()
 
-        let canChangeScrollDirection = self.readerConfig.canChangeScrollDirection
-        self.readerConfig.canChangeScrollDirection = self.readerConfig.isDirection(canChangeScrollDirection, canChangeScrollDirection, false)
-
-        // If user can change scroll direction use the last saved
-        if self.readerConfig.canChangeScrollDirection == true {
-            var scrollDirection = FolioReaderScrollDirection(rawValue: self.folioReader.currentScrollDirection) ?? .vertical
-            if (scrollDirection == .defaultVertical && self.readerConfig.scrollDirection != .defaultVertical) {
-                scrollDirection = self.readerConfig.scrollDirection
+        _ = {
+            let canChangeScrollDirection = self.readerConfig.canChangeScrollDirection
+            self.readerConfig.canChangeScrollDirection = self.readerConfig.isDirection(canChangeScrollDirection, canChangeScrollDirection, false)
+            
+            // If user can change scroll direction use the last saved
+            if self.readerConfig.canChangeScrollDirection == true {
+                
+                let cScrollDirrection = self.folioReader.currentScrollDirection
+                var scrollDirection = FolioReaderScrollDirection(rawValue: cScrollDirrection) ?? .vertical
+                
+                if (scrollDirection == .defaultVertical && self.readerConfig.scrollDirection != .defaultVertical) {
+                    scrollDirection = self.readerConfig.scrollDirection
+                }
+                
+                self.readerConfig.scrollDirection = scrollDirection
             }
+        }()
 
-            self.readerConfig.scrollDirection = scrollDirection
-        }
+        _ = {
+            let hideBars = readerConfig.hideBars
+            
+            let shouldHideNavigationOnTap = self.readerConfig.shouldHideNavigationOnTap
+            self.readerConfig.shouldHideNavigationOnTap = ((hideBars == true) ? true : shouldHideNavigationOnTap)
+            
+            self.centerViewController = FolioReaderCenter(withContainer: self)
+            
+            if let rootViewController = self.centerViewController {
+                self.centerNavigationController = UINavigationController(rootViewController: rootViewController)
+            }
+        }()
 
-        let hideBars = readerConfig.hideBars
-        self.readerConfig.shouldHideNavigationOnTap = ((hideBars == true) ? true : self.readerConfig.shouldHideNavigationOnTap)
-
-        self.centerViewController = FolioReaderCenter(withContainer: self)
-
-        if let rootViewController = self.centerViewController {
-            self.centerNavigationController = UINavigationController(rootViewController: rootViewController)
-        }
-
-        self.centerNavigationController?.setNavigationBarHidden(self.readerConfig.shouldHideNavigationOnTap, animated: false)
-        if let _centerNavigationController = self.centerNavigationController {
-            self.view.addSubview(_centerNavigationController.view)
-            self.addChildViewController(_centerNavigationController)
-        }
-        self.centerNavigationController?.didMove(toParentViewController: self)
-
-        if (self.readerConfig.hideBars == true) {
-            self.readerConfig.shouldHideNavigationOnTap = false
-            self.navigationController?.navigationBar.isHidden = true
-            self.centerViewController?.pageIndicatorHeight = 0
-        }
-
+        _ = {
+            let shouldHideNavigationOnTap = self.readerConfig.shouldHideNavigationOnTap
+            self.centerNavigationController?.setNavigationBarHidden(shouldHideNavigationOnTap, animated: false)
+            
+            if let _centerNavigationController = self.centerNavigationController {
+                self.view.addSubview(_centerNavigationController.view)
+                self.addChildViewController(_centerNavigationController)
+            }
+            
+            self.centerNavigationController?.didMove(toParentViewController: self)
+            
+            if (self.readerConfig.hideBars == true) {
+                self.readerConfig.shouldHideNavigationOnTap = false
+                self.navigationController?.navigationBar.isHidden = true
+                self.centerViewController?.pageIndicatorHeight = 0
+            }
+        }()
+        
         // Read async book
         guard (self.epubPath.isEmpty == false) else {
             print("Epub path is nil.")
