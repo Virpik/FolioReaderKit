@@ -16,7 +16,7 @@ open class FolioReaderContainer: UIViewController {
     var shouldRemoveEpub = true
     
     // Mark those property as public so they can accessed from other classes/subclasses.
-    public var epubPath: String
+///    public var epubPath: String
 	public var unzipPath: String?
     public var book: FRBook
     
@@ -47,7 +47,7 @@ open class FolioReaderContainer: UIViewController {
         
         self.readerConfig = config
         self.folioReader = folioReader
-        self.epubPath = path
+///        self.epubPath = path
 		self.unzipPath = unzipPath
         self.shouldRemoveEpub = removeEpub
         self.book = FRBook()
@@ -58,9 +58,9 @@ open class FolioReaderContainer: UIViewController {
         self.folioReader.readerContainer = self
 
         // Initialize the default reader options.
-        if self.epubPath != "" {
-            self.initialization()
-        }
+//        if self.epubPath != "" {
+//            self.initialization()
+//        }
     }
 
     required public init?(coder aDecoder: NSCoder) {
@@ -70,7 +70,7 @@ open class FolioReaderContainer: UIViewController {
         // See the ExampleFolioReaderContainer.swift for more information?
         self.readerConfig = FolioReaderConfig()
         self.folioReader = FolioReader()
-        self.epubPath = ""
+///        self.epubPath = ""
         self.shouldRemoveEpub = false
         self.book = FRBook()
 
@@ -188,6 +188,7 @@ open class FolioReaderContainer: UIViewController {
                     if self.book.hasAudio || self.readerConfig.enableTTS {
                         self.addAudioPlayer()
                     }
+           
                     self.centerViewController?.reloadData()
                     self.folioReader.isReaderReady = true
                     self.folioReader.delegate?.folioReader?(self.folioReader, didFinishedLoading: self.book)
