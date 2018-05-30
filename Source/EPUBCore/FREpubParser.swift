@@ -28,8 +28,8 @@ class FREpubParser: NSObject, SSZipArchiveDelegate {
     ///   - unzipPath: Path to unzip the compressed epub.
     /// - Returns: The book cover as UIImage object
     /// - Throws: `FolioReaderError`
-    func parseCoverImage(_ epubPath: String, unzipPath: String? = nil) throws -> UIImage {
-        guard let book = try? readEpub(epubPath: epubPath, removeEpub: false, unzipPath: unzipPath),
+    func parseCoverImage(unzipPath: String) throws -> UIImage {
+        guard let book = try? readEpub(unzipPath: unzipPath),
             let coverImage = book.coverImage else {
                 throw FolioReaderError.coverNotAvailable
         }
@@ -48,8 +48,8 @@ class FREpubParser: NSObject, SSZipArchiveDelegate {
     ///   - unzipPath: Path to unzip the compressed epub.
     /// - Returns: The book title
     /// - Throws: `FolioReaderError`
-    func parseTitle(_ epubPath: String, unzipPath: String? = nil) throws -> String {
-        guard let book = try? readEpub(epubPath: epubPath, removeEpub: false, unzipPath: unzipPath), let title = book.title else {
+    func parseTitle(unzipPath: String) throws -> String {
+        guard let book = try? readEpub(unzipPath: unzipPath), let title = book.title else {
              throw FolioReaderError.titleNotAvailable
         }
         return title
@@ -63,8 +63,8 @@ class FREpubParser: NSObject, SSZipArchiveDelegate {
     ///   - unzipPath: Path to unzip the compressed epub.
     /// - Returns: The author name
     /// - Throws: `FolioReaderError`
-    func parseAuthorName(_ epubPath: String, unzipPath: String? = nil) throws -> String {
-        guard let book = try? readEpub(epubPath: epubPath, removeEpub: false, unzipPath: unzipPath), let authorName = book.authorName else {
+    func parseAuthorName(unzipPath: String) throws -> String {
+        guard let book = try? readEpub(unzipPath: unzipPath), let authorName = book.authorName else {
             throw FolioReaderError.authorNameNotAvailable
         }
         return authorName
@@ -78,33 +78,24 @@ class FREpubParser: NSObject, SSZipArchiveDelegate {
     ///   - unzipPath: Path to unzip the compressed epub.
     /// - Returns: `FRBook` Object
     /// - Throws: `FolioReaderError`
-    func readEpub(epubPath withEpubPath: String, removeEpub: Bool = true, unzipPath: String? = nil) throws -> FRBook {
-        epubPathToRemove = withEpubPath
-        shouldRemoveEpub = removeEpub
+    func readEpub(unzipPath: String) throws -> FRBook {
 
-        var isDir: ObjCBool = false
-        let fileManager = FileManager.default
-        let bookName = withEpubPath.lastPathComponent
-        var bookBasePath = ""
+        let bookName = unzipPath.lastPathComponent
+        var bookBasePath = unzipPath
 
-        if let path = unzipPath, fileManager.fileExists(atPath: path) {
-            bookBasePath = path
-        } else {
-            bookBasePath = kApplicationDocumentsDirectory
-        }
+//        if let path = unzipPath, fileManager.fileExists(atPath: path) {
+//            bookBasePath = path
+//        } else {
+//            bookBasePath = kApplicationDocumentsDirectory
+//        }
 
-        bookBasePath = bookBasePath.appendingPathComponent(bookName)
+//        bookBasePath = bookBasePath.appendingPathComponent(bookName)
 
-        guard fileManager.fileExists(atPath: withEpubPath) else {
-            throw FolioReaderError.bookNotAvailable
-        }
+//        guard fileManager.fileExists(atPath: withEpubPath) else {
+//            throw FolioReaderError.bookNotAvailable
+//        }
 
         // Unzip if necessary
-        let needsUnzip = !fileManager.fileExists(atPath: bookBasePath, isDirectory:&isDir) || !isDir.boolValue
-
-        if needsUnzip {
-            SSZipArchive.unzipFile(atPath: withEpubPath, toDestination: bookBasePath, delegate: self)
-        }
 
         // Skip from backup this folder
         try addSkipBackupAttributeToItemAtURL(URL(fileURLWithPath: bookBasePath, isDirectory: true))

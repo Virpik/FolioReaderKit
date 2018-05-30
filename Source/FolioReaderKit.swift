@@ -164,17 +164,13 @@ extension FolioReader {
     ///   - shouldRemoveEpub: Boolean to remove the epub or not. Default true.
     ///   - animated: Pass true to animate the presentation; otherwise, pass false.
     open func presentReader(parentViewController: UIViewController,
-                            withEpubPath epubPath: String,
-                            unzipPath: String? = nil,
+                            unzipPath: String,
                             andConfig config: FolioReaderConfig,
-                            shouldRemoveEpub: Bool = true,
                             animated: Bool = true) {
         
         let readerContainer = FolioReaderContainer(withConfig: config,
                                                    folioReader: self,
-                                                   epubPath: epubPath,
-                                                   unzipPath: unzipPath,
-                                                   removeEpub: shouldRemoveEpub)
+                                                   unzipPath: unzipPath)
         
         self.readerContainer = readerContainer
         
@@ -332,16 +328,16 @@ extension FolioReader {
     /**
      Read Cover Image and Return an `UIImage`
      */
-    open class func getCoverImage(_ epubPath: String, unzipPath: String? = nil) throws -> UIImage {
-        return try FREpubParser().parseCoverImage(epubPath, unzipPath: unzipPath)
+    open class func getCoverImage(unzipPath: String) throws -> UIImage {
+        return try FREpubParser().parseCoverImage(unzipPath: unzipPath)
     }
 
-    open class func getTitle(_ epubPath: String, unzipPath: String? = nil) throws -> String {
-        return try FREpubParser().parseTitle(epubPath, unzipPath: unzipPath)
+    open class func getTitle(unzipPath: String) throws -> String {
+        return try FREpubParser().parseTitle(unzipPath: unzipPath)
     }
 
-    open class func getAuthorName(_ epubPath: String, unzipPath: String? = nil) throws-> String {
-        return try FREpubParser().parseAuthorName(epubPath, unzipPath: unzipPath)
+    open class func getAuthorName(unzipPath: String) throws-> String {
+        return try FREpubParser().parseAuthorName(unzipPath: unzipPath)
     }
 }
 

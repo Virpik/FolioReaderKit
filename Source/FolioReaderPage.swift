@@ -64,10 +64,11 @@ open class FolioReaderPage: UICollectionViewCell, UIWebViewDelegate, UIGestureRe
     }
 
     // MARK: - View life cicle
-
     public override init(frame: CGRect) {
         // Init explicit attributes with a default value. The `setup` function MUST be called to configure the current object with valid attributes.
-        self.readerContainer = FolioReaderContainer(withConfig: FolioReaderConfig(), folioReader: FolioReader(), epubPath: "")
+        self.readerContainer = FolioReaderContainer(withConfig: FolioReaderConfig(),
+                                                    folioReader: FolioReader(),
+                                                    unzipPath: "")
         super.init(frame: frame)
         self.backgroundColor = UIColor.clear
 
