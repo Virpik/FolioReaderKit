@@ -29,7 +29,6 @@ import ZFDragableModalTransition
     ///
     /// - Parameter pageNumber: The appeared page item
     @objc optional func pageItemChanged(_ pageNumber: Int)
-
 }
 
 /// The base reader class
@@ -295,7 +294,7 @@ open class FolioReaderCenter: UIViewController, UICollectionViewDelegate, UIColl
 
     func reloadData() {
         self.loadingView.stopAnimating()
-        self.totalPages = book.spine.spineReferences.count
+        self.totalPages = self.book.spine.spineReferences.count
 
         self.collectionView.reloadData()
         self.configureNavBarButtons()

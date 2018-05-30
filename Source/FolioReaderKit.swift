@@ -100,9 +100,8 @@ open class FolioReader: NSObject {
     deinit {
         removeObservers()
     }
-
-    /// Custom unzip path
-    open var unzipPath: String?
+    
+    var books: [FRBook] = []
 
     /// FolioReaderDelegate
     open weak var delegate: FolioReaderDelegate?
@@ -151,7 +150,6 @@ open class FolioReader: NSObject {
 }
 
 // MARK: - Present FolioReader
-
 extension FolioReader {
 
     /// Present a Folio Reader Container modally on a Parent View Controller.
@@ -163,20 +161,42 @@ extension FolioReader {
     ///   - config: FolioReader configuration.
     ///   - shouldRemoveEpub: Boolean to remove the epub or not. Default true.
     ///   - animated: Pass true to animate the presentation; otherwise, pass false.
-    open func presentReader(parentViewController: UIViewController,
-                            unzipPath: String,
-                            andConfig config: FolioReaderConfig,
-                            animated: Bool = true) {
+    open func prepareReader(config: FolioReaderConfig) -> FolioReaderContainer {
         
-        let readerContainer = FolioReaderContainer(withConfig: config,
-                                                   folioReader: self,
-                                                   unzipPath: unzipPath)
+        let readerContainer = FolioReaderContainer(withConfig: config, folioReader: self)
         
         self.readerContainer = readerContainer
         
-        parentViewController.present(readerContainer, animated: animated, completion: nil)
-        
         self.addObservers()
+        
+        return readerContainer
+    }
+    
+    open func addResourse(unzipPath: String) {
+        
+        self.parse(unzipPath: unzipPath) { (book) in
+            
+            self.books.append(book)
+            
+            if self.isReaderOpen {
+                return
+            }
+            
+            self.isReaderOpen = true
+            
+            self.readerContainer?.read(book: book)
+        }
+    }
+    
+    func parse(unzipPath: String, handeler: @escaping ((FRBook) -> Void)) {
+        DispatchQueue.global().async(execute: {
+            do {
+                let parsedBook = try FREpubParser().readEpub(unzipPath: unzipPath)
+                DispatchQueue.main.async(execute: {
+                    handeler(parsedBook)
+                })
+            } catch {}
+        })
     }
 }
 
@@ -359,7 +379,7 @@ extension FolioReader {
             "pageNumber": (self.readerCenter?.currentPageNumber ?? 0),
             "pageOffsetX": webView.scrollView.contentOffset.x,
             "pageOffsetY": webView.scrollView.contentOffset.y
-            ] as [String : Any]
+        ] as [String : Any]
 
         self.savedPositionForCurrentBook = position
     }

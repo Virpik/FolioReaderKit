@@ -81,28 +81,16 @@ class FREpubParser: NSObject, SSZipArchiveDelegate {
     func readEpub(unzipPath: String) throws -> FRBook {
 
         let bookName = unzipPath.lastPathComponent
-        var bookBasePath = unzipPath
-
-//        if let path = unzipPath, fileManager.fileExists(atPath: path) {
-//            bookBasePath = path
-//        } else {
-//            bookBasePath = kApplicationDocumentsDirectory
-//        }
-
-//        bookBasePath = bookBasePath.appendingPathComponent(bookName)
-
-//        guard fileManager.fileExists(atPath: withEpubPath) else {
-//            throw FolioReaderError.bookNotAvailable
-//        }
-
-        // Unzip if necessary
-
+        let bookBasePath = unzipPath
+        
         // Skip from backup this folder
         try addSkipBackupAttributeToItemAtURL(URL(fileURLWithPath: bookBasePath, isDirectory: true))
 
         book.name = bookName
+        
         try readContainer(with: bookBasePath)
         try readOpf(with: bookBasePath)
+        
         return self.book
     }
 
