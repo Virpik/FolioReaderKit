@@ -88,7 +88,7 @@ open class FolioReaderCenter: UIViewController, UICollectionViewDelegate, UIColl
 
     fileprivate var book: FRBook {
         
-        guard let readerContainer = readerContainer else {
+        guard let readerContainer = self.readerContainer else {
             return FRBook()
         }
         
@@ -312,10 +312,12 @@ open class FolioReaderCenter: UIViewController, UICollectionViewDelegate, UIColl
         self.setCollectionViewProgressiveDirection()
 
         if self.readerConfig.loadSavedPositionForCurrentBook {
-            guard let position = folioReader.savedPositionForCurrentBook, let pageNumber = position["pageNumber"] as? Int, pageNumber > 0 else {
-                self.currentPageNumber = 1
-                return
-            }
+            
+            self.currentPageNumber = 1
+            
+            guard let position = self.folioReader.savedPositionForCurrentBook else { return }
+            guard let pageNumber = position["pageNumber"] as? Int else { return }
+            guard pageNumber > 0 else { return }
 
             self.changePageWith(page: pageNumber)
             self.currentPageNumber = pageNumber

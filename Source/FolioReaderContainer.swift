@@ -16,7 +16,9 @@ open class FolioReaderContainer: UIViewController {
     
 ///    public var epubPath: String
 //    public var unzipPath: String!
-//    public var book: FRBook
+    public var book: FRBook {
+        return self.folioReader.books.book
+    }
     
     public var centerNavigationController: UINavigationController?
     public var centerViewController: FolioReaderCenter?
@@ -42,8 +44,6 @@ open class FolioReaderContainer: UIViewController {
         self.readerConfig = config
         self.folioReader = folioReader
 
-//        self.book = FRBook()
-
         super.init(nibName: nil, bundle: Bundle.frameworkBundle())
 
         // Configure the folio reader.
@@ -57,8 +57,6 @@ open class FolioReaderContainer: UIViewController {
         // See the ExampleFolioReaderContainer.swift for more information?
         self.readerConfig = FolioReaderConfig()
         self.folioReader = FolioReader()
-        
-        self.book = FRBook()
 
         super.init(coder: aDecoder)
 
@@ -161,7 +159,6 @@ open class FolioReaderContainer: UIViewController {
     }
 
     func read(book: FRBook) {
-        self.book = book
         self.folioReader.isReaderOpen = true
         
         if self.book.hasAudio || self.readerConfig.enableTTS {
@@ -178,7 +175,7 @@ open class FolioReaderContainer: UIViewController {
      Initialize the media player
      */
     func addAudioPlayer() {
-        self.audioPlayer = FolioReaderAudioPlayer(withFolioReader: self.folioReader, book: self.book)
+        self.audioPlayer = FolioReaderAudioPlayer(withFolioReader: self.folioReader)
         self.folioReader.readerAudioPlayer = audioPlayer
     }
 

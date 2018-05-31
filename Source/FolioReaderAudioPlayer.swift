@@ -27,13 +27,15 @@ open class FolioReaderAudioPlayer: NSObject {
     var completionHandler: () -> Void = {}
     var utteranceRate: Float = 0
 
-    fileprivate var book: FRBook
+    fileprivate var book: FRBook {
+        return self.folioReader.books.book
+    }
+    
     fileprivate var folioReader: FolioReader
 
     // MARK: Init
 
-    init(withFolioReader folioReader: FolioReader, book: FRBook) {
-        self.book = book
+    init(withFolioReader folioReader: FolioReader) {
         self.folioReader = folioReader
 
         super.init()

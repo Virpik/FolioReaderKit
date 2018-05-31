@@ -101,7 +101,7 @@ open class FolioReader: NSObject {
         removeObservers()
     }
     
-    var books: [FRBook] = []
+    var books: FRBooks = FRBooks()
 
     /// FolioReaderDelegate
     open weak var delegate: FolioReaderDelegate?
@@ -176,7 +176,7 @@ extension FolioReader {
         
         self.parse(unzipPath: unzipPath) { (book) in
             
-            self.books.append(book)
+            self.books.books.append(book)
             
             if self.isReaderOpen {
                 return
