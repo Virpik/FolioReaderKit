@@ -16,7 +16,7 @@ open class FolioReaderContainer: UIViewController {
     
 ///    public var epubPath: String
 //    public var unzipPath: String!
-    public var book: FRBook
+//    public var book: FRBook
     
     public var centerNavigationController: UINavigationController?
     public var centerViewController: FolioReaderCenter?
@@ -42,7 +42,7 @@ open class FolioReaderContainer: UIViewController {
         self.readerConfig = config
         self.folioReader = folioReader
 
-        self.book = FRBook()
+//        self.book = FRBook()
 
         super.init(nibName: nil, bundle: Bundle.frameworkBundle())
 
@@ -168,9 +168,10 @@ open class FolioReaderContainer: UIViewController {
             self.addAudioPlayer()
         }
         
-        self.centerViewController?.reloadData()
         self.folioReader.isReaderReady = true
         self.folioReader.delegate?.folioReader?(self.folioReader, didFinishedLoading: self.book)
+        
+        self.centerViewController?.reloadData()
     }
     
     /**

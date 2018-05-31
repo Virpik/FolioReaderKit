@@ -79,17 +79,27 @@ open class FolioReaderCenter: UIViewController, UICollectionViewDelegate, UIColl
     fileprivate var currentOrientation: UIInterfaceOrientation?
 
     fileprivate var readerConfig: FolioReaderConfig {
-        guard let readerContainer = readerContainer else { return FolioReaderConfig() }
+        guard let readerContainer = self.readerContainer else {
+            return FolioReaderConfig()
+        }
+        
         return readerContainer.readerConfig
     }
 
     fileprivate var book: FRBook {
-        guard let readerContainer = readerContainer else { return FRBook() }
+        
+        guard let readerContainer = readerContainer else {
+            return FRBook()
+        }
+        
         return readerContainer.book
     }
 
     fileprivate var folioReader: FolioReader {
-        guard let readerContainer = readerContainer else { return FolioReader() }
+        guard let readerContainer = self.readerContainer else {
+            return FolioReader()
+        }
+        
         return readerContainer.folioReader
     }
 
@@ -97,6 +107,7 @@ open class FolioReaderCenter: UIViewController, UICollectionViewDelegate, UIColl
 
     init(withContainer readerContainer: FolioReaderContainer) {
         self.readerContainer = readerContainer
+        
         super.init(nibName: nil, bundle: Bundle.frameworkBundle())
 
         self.initialization()
