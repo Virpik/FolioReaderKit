@@ -9,30 +9,6 @@
 
 import UIKit
 
-public struct FRBooks {
-    
-    public var books: [FRBook] = []
-    public var index: Int = 0
-    
-    public var book: FRBook {
-        if self.index >= self.books.count {
-            return FRBook()
-        }
-        
-        return self.books[self.index]
-    }
-    
-    public var pages: Int {
-        return self.books.count
-    }
-    
-    public var page: Int = 0
-    
-    init() {
-        
-    }
-}
-
 open class FRBook: NSObject {
     var metadata = FRMetadata()
     var spine = FRSpine()

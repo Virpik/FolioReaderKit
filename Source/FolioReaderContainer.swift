@@ -158,7 +158,13 @@ open class FolioReaderContainer: UIViewController {
         }
     }
 
-    func read(book: FRBook) {
+    func read() {
+        
+        if self.folioReader.isReaderOpen {
+            self.centerViewController?.softUpdate()
+            return
+        }
+        
         self.folioReader.isReaderOpen = true
         
         if self.book.hasAudio || self.readerConfig.enableTTS {
@@ -180,7 +186,6 @@ open class FolioReaderContainer: UIViewController {
     }
 
     // MARK: - Status Bar
-
     override open var prefersStatusBarHidden: Bool {
         return (self.readerConfig.shouldHideNavigationOnTap == false ? false : self.shouldHideStatusBar)
     }
