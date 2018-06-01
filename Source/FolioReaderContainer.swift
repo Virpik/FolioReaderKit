@@ -127,23 +127,27 @@ open class FolioReaderContainer: UIViewController {
             self.centerViewController = FolioReaderCenter(withContainer: self)
             
             if let rootViewController = self.centerViewController {
-                self.centerNavigationController = UINavigationController(rootViewController: rootViewController)
+                if self.navigationController == nil {
+                    self.centerNavigationController = UINavigationController(rootViewController: rootViewController)
+                } else {
+                    self.centerNavigationController = self.navigationController
+                }
             }
-        }()
 
-        _ = {
-            let shouldHideNavigationOnTap = self.readerConfig.shouldHideNavigationOnTap
             self.centerNavigationController?.setNavigationBarHidden(shouldHideNavigationOnTap, animated: false)
             
-            if let _centerNavigationController = self.centerNavigationController {
+            if let _centerNavigationController = self.centerNavigationController, self.navigationController == nil {
                 self.view.addSubview(_centerNavigationController.view)
                 self.addChildViewController(_centerNavigationController)
+            } else {
+                self.view.addSubview(self.centerViewController!.view)
+                self.addChildViewController(self.centerViewController!)
             }
             
             self.centerNavigationController?.didMove(toParentViewController: self)
             
             if (self.readerConfig.hideBars == true) {
-                self.readerConfig.shouldHideNavigationOnTap = false
+//                self.readerConfig.shouldHideNavigationOnTap = false
                 self.navigationController?.navigationBar.isHidden = true
                 self.centerViewController?.pageIndicatorHeight = 0
             }

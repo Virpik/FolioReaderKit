@@ -457,7 +457,7 @@ internal extension UIViewController {
     }
 
     func setTranslucentNavigation(_ translucent: Bool = true, color: UIColor, tintColor: UIColor = UIColor.white, titleColor: UIColor = UIColor.black, andFont font: UIFont = UIFont.systemFont(ofSize: 17)) {
-        let navBar = self.navigationController?.navigationBar
+        let navBar = self.navigationController?.navigationBar ?? self.parent?.navigationController?.navigationBar
         navBar?.setBackgroundImage(UIImage.imageWithColor(color), for: UIBarMetrics.default)
         navBar?.showBottomHairline()
         navBar?.isTranslucent = translucent
